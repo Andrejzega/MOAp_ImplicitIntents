@@ -4,4 +4,8 @@
     <string name="button_location">Open Location</string>
     <string name="button_share">Share This Text</string>
     <string name="button_phone">Call This Number</string>
+    <string name="error_invalidwebsite">The entered link is not valid!</string>
+    <string name="error_invalidlocation">The entered location is not valid!</string>
+    <string name="error_share">The entered text is not valid!</string>
+    <string name="error_invalidphone">The entered link is not valid!</string>
 </resources>
