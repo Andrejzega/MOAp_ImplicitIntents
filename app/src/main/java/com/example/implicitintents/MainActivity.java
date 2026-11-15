@@ -9,17 +9,17 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ShareCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
 
-    //references for all text fields
-    public EditText textField_website = findViewById(R.id.editText_website);
-    public EditText textField_location = findViewById(R.id.editText_location);
-    public EditText textField_share = findViewById(R.id.editText_share);
-    public EditText textField_phone = findViewById(R.id.editText_phone);
+    private EditText textField_website;
+    private EditText textField_location;
+    private EditText textField_share;
+    private EditText textField_phone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,28 +31,66 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        textField_website = findViewById(R.id.editText_website);
+        textField_location = findViewById(R.id.editText_location);
+        textField_share = findViewById(R.id.editText_share);
+        textField_phone = findViewById(R.id.editText_phone);
     }
 
     public void openWebsite(View view) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        Uri uri = Uri.parse(String.valueOf(textField_website.getText()));
-        String scheme = (uri.getScheme());
-        intent.setData(uri);
-
-        if(scheme.equalsIgnoreCase("http") || scheme.equalsIgnoreCase("https")) {
+        String url = textField_website.getText().toString();
+        Uri webpage = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         } else {
-            Toast.makeText(MainActivity.this, getString(R.string.error_invalid_website), Toast.LENGTH_SHORT).show();
+            try {
+                startActivity(intent);
+            } catch (Exception e) {
+                Toast.makeText(this, getString(R.string.error_invalidwebsite), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
     public void openLocation(View view) {
-
+        String loc = textField_location.getText().toString();
+        Uri addressUri = Uri.parse("geo:0,0?q=" + loc);
+        Intent intent = new Intent(Intent.ACTION_VIEW, addressUri);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        } else {
+            try {
+                startActivity(intent);
+            } catch (Exception e) {
+                Toast.makeText(this, getString(R.string.error_invalidlocation), Toast.LENGTH_SHORT).show();
+            }
+        }
     }
+
     public void shareText(View view) {
-
+        String txt = textField_share.getText().toString();
+        String mimeType = "text/plain";
+        ShareCompat.IntentBuilder
+                .from(this)
+                .setType(mimeType)
+                .setChooserTitle(R.string.button_share)
+                .setText(txt)
+                .startChooser();
     }
-    public void callNumber(View view) {
 
+    public void callNumber(View view) {
+        String phone = textField_phone.getText().toString();
+        Uri uri = Uri.parse("tel:" + phone);
+        Intent intent = new Intent(Intent.ACTION_DIAL, uri);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        } else {
+            try {
+                startActivity(intent);
+            } catch (Exception e) {
+                Toast.makeText(this, getString(R.string.error_invalidphone), Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

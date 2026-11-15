@@ -10,8 +10,8 @@ android {
 
     defaultConfig {
         applicationId = "com.example.implicitintents"
-        minSdk = 36
-        targetSdk = 37
+        minSdk = 26
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -20,6 +20,7 @@ android {
 
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("debug")
             optimization {
                 enable = false
             }
