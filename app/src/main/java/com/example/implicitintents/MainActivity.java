@@ -28,7 +28,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            int marginSide = (int) (24 * getResources().getDisplayMetrics().density);
+            int marginTop = (int) (24 * getResources().getDisplayMetrics().density);
+            int marginBottom = (int) (24 * getResources().getDisplayMetrics().density);
+            v.setPadding(systemBars.left + marginSide, systemBars.top + marginTop, systemBars.right + marginSide, systemBars.bottom + marginBottom);
             return insets;
         });
 
@@ -39,7 +42,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openWebsite(View view) {
-        String url = textField_website.getText().toString();
+        String url = textField_website.getText().toString().trim();
+        if (!url.isEmpty() && !url.startsWith("http://") && !url.startsWith("https://")) {
+            url = "https://" + url;
+        }
         Uri webpage = Uri.parse(url);
         Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
         if (intent.resolveActivity(getPackageManager()) != null) {
@@ -80,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void callNumber(View view) {
-        String phone = textField_phone.getText().toString();
+        String phone = textField_phone.getText().toString().trim();
         Uri uri = Uri.parse("tel:" + phone);
         Intent intent = new Intent(Intent.ACTION_DIAL, uri);
         if (intent.resolveActivity(getPackageManager()) != null) {
@@ -92,5 +98,12 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, getString(R.string.error_invalidphone), Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    public void fillPlaceholders(View view) {
+        textField_website.setText(R.string.edittext_uri);
+        textField_location.setText(R.string.edittext_loc);
+        textField_share.setText(R.string.edittext_share);
+        textField_phone.setText(R.string.edittext_phone);
     }
 }
